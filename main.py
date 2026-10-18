@@ -8,7 +8,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle('harackit\'s  server manager')
+        self.setWindowTitle('harackit server manager')
         self.setWindowIcon(QIcon("icon.png"))
 
         container = QWidget()
@@ -66,41 +66,65 @@ class MainWindow(QMainWindow):
     def manage_httpd(self):
         is_active = subprocess.run(['systemctl', 'is-active', 'httpd'], text=True, capture_output=True).stdout.strip()
         if is_active == 'inactive':
-            subprocess.run(['systemctl', 'start', 'httpd'])
-            self.httpd_status_label.setText('running')
-            self.httpd_status_label.setStyleSheet('color: green;')
+            try:
+                subprocess.run(['systemctl', 'start', 'httpd'], check=True, capture_output=True)
+            except subprocess.CalledProcessError as e:
+                self.httpd_status_label.setText(e.stderr.decode('utf-8'))
+            else:
+                self.httpd_status_label.setText('running')
+                self.httpd_status_label.setStyleSheet('color: green;')
         elif is_active == 'active':
-            subprocess.run(['systemctl', 'stop', 'httpd'])
-            self.httpd_status_label.setText('stopped')
-            self.httpd_status_label.setStyleSheet('color: red;')
+            try:
+                subprocess.run(['systemctl', 'stop', 'httpd'], check=True, capture_output=True)
+            except subprocess.CalledProcessError as e:
+                self.httpd_status_label.setText(e.stderr.decode('utf-8'))
+            else:
+                self.httpd_status_label.setText('stopped')
+                self.httpd_status_label.setStyleSheet('color: red;')
         else:
-            self.httpd_status_label.setText('error!')
+            self.httpd_status_label.setText('is-active returned a non boolean value')
         
     def manage_mariadb(self):
         is_active = subprocess.run(['systemctl', 'is-active', 'mariadb'], text=True, capture_output=True).stdout.strip()
         if is_active == 'inactive':
-            subprocess.run(['systemctl', 'start', 'mariadb'])
-            self.mariadb_status_label.setText('running')
-            self.mariadb_status_label.setStyleSheet('color: green;')
+            try:
+                subprocess.run(['systemctl', 'start', 'mariadb'])
+            except subprocess.CalledProcessError as e:
+                self.mariadb_status_label.setText(e.stderr.decode('utf-8'))
+            else:
+                self.mariadb_status_label.setText('running')
+                self.mariadb_status_label.setStyleSheet('color: green;')
         elif is_active == 'active':
-            subprocess.run(['systemctl', 'stop', 'mariadb'])
-            self.mariadb_status_label.setText('stopped')
-            self.mariadb_status_label.setStyleSheet('color: red;')
+            try:
+                subprocess.run(['systemctl', 'stop', 'mariadb'])
+            except subprocess.CalledProcessError as e:
+                self.mariadb_status_label.setText(e.stderr.decode('utf-8'))
+            else:
+                self.mariadb_status_label.setText('stopped')
+                self.mariadb_status_label.setStyleSheet('color: red;')
         else:
-            self.mariadb_status_label.setText('error!')
+            self.mariadb_status_label.setText('is-active returned a non-boolean value')
 
     def manage_sshd(self):
         is_active = subprocess.run(['systemctl', 'is-active', 'sshd'], text=True, capture_output=True).stdout.strip()
         if is_active == 'inactive':
-            subprocess.run(['systemctl', 'start', 'sshd'])
-            self.sshd_status_label.setText('running')
-            self.sshd_status_label.setStyleSheet('color: green;')
+            try:
+                subprocess.run(['systemctl', 'start', 'sshd'])
+            except subprocess.CalledProcessError as e:
+                self.mariadb_status_label.setText(e.stderr.decode('utf-8'))
+            else:
+                self.sshd_status_label.setText('running')
+                self.sshd_status_label.setStyleSheet('color: green;')
         elif is_active == 'active':
-            subprocess.run(['systemctl', 'stop', 'sshd'])
-            self.sshd_status_label.setText('stopped')
-            self.sshd_status_label.setStyleSheet('color: red;')
+            try:
+                subprocess.run(['systemctl', 'stop', 'sshd'])
+            except subprocess.CalledProcessError as e:
+                self.mariadb_status_label.setText(e.stderr.decode('utf-8'))
+            else:
+                self.sshd_status_label.setText('stopped')
+                self.sshd_status_label.setStyleSheet('color: red;')
         else:
-            self.sshd_status_label.setText('error!')
+            self.sshd_status_label.setText('is-active returned a non boolean value')
 
 app = QApplication()
 
