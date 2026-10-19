@@ -17,31 +17,55 @@ class MainWindow(QMainWindow):
         layout = QGridLayout(container)
 
         httpd_label = QLabel('httpd')
-        self.httpd_status_label = QLabel('stopped')
+        is_active = subprocess.run(['systemctl', 'is-active', 'httpd'], text=True, capture_output=True).stdout.strip()
+        if is_active == 'active':
+            self.httpd_status_label = QLabel('running')
+            self.httpd_status_label.setStyleSheet('color: green;')
+        elif is_active == 'inactive':
+            self.httpd_status_label = QLabel('stopped')
+            self.httpd_status_label.setStyleSheet('color: red;')
+        else:
+            self.httpd_status_label = QLabel ('is-active returned a non-boolean value')
+
         httpd_button = QPushButton('start/stop')
         httpd_button.clicked.connect(self.manage_httpd)
         httpd_label.setAlignment(Qt.AlignCenter)
         self.httpd_status_label.setAlignment(Qt.AlignCenter)
 
         mariadb_label = QLabel('mariadb')
-        self.mariadb_status_label = QLabel('stopped')
+        is_active = subprocess.run(['systemctl', 'is-active', 'mariadb'], text=True, capture_output=True).stdout.strip()
+        if is_active == 'active':
+            self.mariadb_status_label = QLabel('running')
+            self.mariadb_status_label.setStyleSheet('color: green;')
+        elif is_active == 'inactive':
+            self.mariadb_status_label = QLabel('stopped')
+            self.mariadb_status_label.setStyleSheet('color: red;')
+        else:
+            self.mariadb_status_label = QLabel ('is-active returned a non-boolean value')
+
         mariadb_button = QPushButton('start/stop')
         mariadb_button.clicked.connect(self.manage_mariadb)
         mariadb_label.setAlignment(Qt.AlignCenter)
         self.mariadb_status_label.setAlignment(Qt.AlignCenter)
 
         sshd_label = QLabel('sshd')
-        self.sshd_status_label = QLabel('stopped')
+        is_active = subprocess.run(['systemctl', 'is-active', 'sshd'], text=True, capture_output=True).stdout.strip()
+        if is_active == 'active':
+            self.sshd_status_label = QLabel('running')
+            self.sshd_status_label.setStyleSheet('color: green;')
+        elif is_active == 'inactive':
+            self.sshd_status_label = QLabel('stopped')
+            self.sshd_status_label.setStyleSheet('color: red;')
+        else:
+            self.sshd_status_label = QLabel ('is-active returned a non-boolean value')
+
         sshd_button = QPushButton('start/stop')
         sshd_button.clicked.connect(self.manage_sshd)
         sshd_label.setAlignment(Qt.AlignCenter)
         self.sshd_status_label.setAlignment(Qt.AlignCenter)
 
-        self.httpd_status_label.setStyleSheet("color: red;")
         httpd_label.setStyleSheet("font-size: 20px; font-weight: 900;")
-        self.mariadb_status_label.setStyleSheet("color: red;")
         mariadb_label.setStyleSheet("font-size: 20px; font-weight: 900;")
-        self.sshd_status_label.setStyleSheet("color: red;")
         sshd_label.setStyleSheet("font-size: 20px; font-weight: 900;")
 
         layout.addWidget(httpd_label, 0, 0)
