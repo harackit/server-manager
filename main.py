@@ -1,8 +1,22 @@
 import sys
 import subprocess
+import platform
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPalette, QColor, QIcon
-from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QWidget, QGridLayout, QPushButton
+from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QWidget, QGridLayout, QPushButton, QMessageBox
+
+if sys.platform != 'linux':    
+    app = QApplication().setWindowIcon(QIcon("icon.png"))
+
+    QMessageBox.critical(None, "Platform not supported", "Your platform - " + platform + " is not currently supported")
+    sys.exit(1)
+
+if(platform.freedesktop_os_release()["ID"] != 'fedora' and platform.freedesktop_os_release()["ID"] != 'arch'):
+    app = QApplication().setWindowIcon(QIcon("icon.png"))
+    
+    QMessageBox.critical(None, "Distro not supported", "Your linux distribution - " + platform.freedesktop_os_release()["NAME"] + " is currently not supported")
+    sys.exit(1)
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
