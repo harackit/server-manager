@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QWidget, QGridL
 if sys.platform != 'linux':    
     app = QApplication().setWindowIcon(QIcon("icon.png"))
 
-    QMessageBox.critical(None, "Platform not supported", "Your platform - " + platform + " is not currently supported")
+    QMessageBox.critical(None, "Platform not supported", "Your platform - " + sys.platform + " is not currently supported")
     sys.exit(1)
 
 if(platform.freedesktop_os_release()["ID"] != 'fedora' and platform.freedesktop_os_release()["ID"] != 'arch'):
