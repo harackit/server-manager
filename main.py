@@ -1,29 +1,41 @@
-import sys
 import subprocess
-import platform
+import resources_rc
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QWidget, QGridLayout, QPushButton
 from PySide6.QtGui import QPalette, QColor, QIcon
-from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QWidget, QGridLayout, QPushButton, QMessageBox
 
-if sys.platform != 'linux':    
-    app = QApplication().setWindowIcon(QIcon("icon.png"))
+def checkPlatform():
+    import sys
+    from PySide6.QtWidgets import QMessageBox
+    if sys.platform != 'linux':    
+        app = QApplication()
+        app.setWindowIcon(QIcon(":/icon.png"))
 
-    QMessageBox.critical(None, "Platform not supported", "Your platform - " + sys.platform + " is not currently supported")
-    sys.exit(1)
+        QMessageBox.critical(None, "Platform not supported", "Your platform - " + sys.platform + " is not currently supported")
+        sys.exit(1)
 
-if(platform.freedesktop_os_release()["ID"] != 'fedora' and platform.freedesktop_os_release()["ID"] != 'arch'):
-    app = QApplication().setWindowIcon(QIcon("icon.png"))
+def checkDistro():
+    import platform
+    import sys
+    from PySide6.QtWidgets import QMessageBox
+    if(platform.freedesktop_os_release()["ID"] not in ['fedora', 'rhel', 'arch']):
+        app = QApplication()
+        app.setWindowIcon(QIcon(":/icon.png"))
     
-    QMessageBox.critical(None, "Distro not supported", "Your linux distribution - " + platform.freedesktop_os_release()["NAME"] + " is currently not supported")
-    sys.exit(1)
+        QMessageBox.critical(None, "Distro not supported", "Your linux distribution - " + platform.freedesktop_os_release()["NAME"] + " is currently not supported")
+        sys.exit(1)
 
+if __name__ == "__main__":
+    checkPlatform()
+    checkDistro()
 
 class MainWindow(QMainWindow):
+   
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle('harackit server manager')
-        self.setWindowIcon(QIcon("icon.png"))
+        self.setWindowIcon(QIcon(":/icon.png"))
 
         container = QWidget()
         self.setCentralWidget(container)
@@ -149,7 +161,7 @@ class MainWindow(QMainWindow):
             try:
                 subprocess.run(['systemctl', 'start', 'sshd'])
             except subprocess.CalledProcessError as e:
-                self.mariadb_status_label.setText(e.stderr.decode('utf-8'))
+                self.sshd_status_label.setText(e.stderr.decode('utf-8'))
             else:
                 self.sshd_status_label.setText('running')
                 self.sshd_status_label.setStyleSheet('color: green;')
@@ -164,9 +176,10 @@ class MainWindow(QMainWindow):
         else:
             self.sshd_status_label.setText('is-active returned a non boolean value')
 
-app = QApplication()
+if __name__ == "__main__":
+    app = QApplication()
 
-window = MainWindow()
-window.show()
+    window = MainWindow()
+    window.show()
 
-app.exec()
+    app.exec()

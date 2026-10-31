@@ -1,2 +1,8 @@
 __pycache__
 test.py
+.*
+!.gitignore
+resources.qrc
+resources_rc.py
+*.spec
+*.bin
